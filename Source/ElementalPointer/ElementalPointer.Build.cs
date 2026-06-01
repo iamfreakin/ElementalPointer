@@ -7,7 +7,10 @@ public class ElementalPointer : ModuleRules
 	public ElementalPointer(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
+
+		// 기능별 폴더(Core/Combat/...) 간 "Core/X.h" 형태의 모듈 기준 include를 허용.
+		PublicIncludePaths.Add(ModuleDirectory);
+
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
