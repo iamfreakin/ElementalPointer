@@ -2,8 +2,10 @@
 
 #include "Enemy/EPEnemySpawner.h"
 #include "Enemy/EPEnemy.h"
+#include "Core/EPGameMode.h"
 #include "EngineUtils.h"
 #include "TimerManager.h"
+#include "Kismet/GameplayStatics.h"
 
 AEPEnemySpawner::AEPEnemySpawner()
 {
@@ -29,6 +31,13 @@ void AEPEnemySpawner::BeginPlay()
 void AEPEnemySpawner::SpawnOne()
 {
 	if (!EnemyClass)
+	{
+		return;
+	}
+
+	// 전투가 끝났으면 스폰 중지.
+	const AEPGameMode* GameMode = Cast<AEPGameMode>(UGameplayStatics::GetGameMode(this));
+	if (GameMode && !GameMode->IsCombatActive())
 	{
 		return;
 	}
