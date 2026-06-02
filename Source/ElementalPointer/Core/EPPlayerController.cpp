@@ -1,11 +1,15 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "Core/EPPlayerController.h"
+#include "Combat/EPSwordField.h"
 #include "DrawDebugHelpers.h"
 
 AEPPlayerController::AEPPlayerController()
 {
 	bShowMouseCursor = true;
+
+	// 기본값: 전용 BP가 없어도 C++ 기본 클래스로 동작.
+	SwordFieldClass = AEPSwordField::StaticClass();
 }
 
 void AEPPlayerController::BeginPlay()
@@ -14,6 +18,14 @@ void AEPPlayerController::BeginPlay()
 
 	// 커서가 화면 안에서만 움직이는 전투용 입력 모드.
 	SetInputMode(FInputModeGameAndUI());
+
+	// 검의 공격 범위 액터 스폰 (커서를 따라다님).
+	if (SwordFieldClass)
+	{
+		FActorSpawnParameters Params;
+		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		GetWorld()->SpawnActor<AEPSwordField>(SwordFieldClass, FVector::ZeroVector, FRotator::ZeroRotator, Params);
+	}
 }
 
 void AEPPlayerController::PlayerTick(float DeltaTime)

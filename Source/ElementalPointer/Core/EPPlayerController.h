@@ -43,6 +43,10 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void PlayerTick(float DeltaTime) override;
 
+	/** BeginPlay에서 스폰할 검의 공격 범위 액터 클래스. */
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	TSubclassOf<class AEPSwordField> SwordFieldClass;
+
 	/** 전투 평면의 높이(Z). arena 바닥과 일치. */
 	UPROPERTY(EditDefaultsOnly, Category = "Cursor")
 	float CombatPlaneZ = 0.f;
