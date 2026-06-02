@@ -24,8 +24,19 @@ public:
 
 	float GetAttackRadius() const { return AttackRadius; }
 
+	/** 한 번의 오토어택 피해량. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float AttackDamage = 10.f;
+
+	/** 초당 공격 횟수(공속). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float AttacksPerSecond = 1.f;
+
 protected:
 	virtual void Tick(float DeltaTime) override;
+
+	/** 범위 안의 모든 살아있는 적에게 1회 오토어택을 적용. */
+	void PerformAttack();
 
 	/** 범위를 디버그 원으로 표시할지. */
 	UPROPERTY(EditAnywhere, Category = "Combat|Debug")
@@ -34,4 +45,7 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USceneComponent> Root;
+
+	/** 공격 주기 누적 시간. */
+	float AttackAccumulator = 0.f;
 };
