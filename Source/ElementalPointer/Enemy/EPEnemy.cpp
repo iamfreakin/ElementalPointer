@@ -1,9 +1,12 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "Enemy/EPEnemy.h"
+#include "Core/EPPlayerState.h"
 #include "Components/StaticMeshComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
+#include "GameFramework/PlayerController.h"
+#include "Kismet/GameplayStatics.h"
 
 AEPEnemy::AEPEnemy()
 {
@@ -94,6 +97,15 @@ void AEPEnemy::ApplyDamage(float Amount, EEPHitType HitType)
 
 	if (CurrentHealth <= 0.f)
 	{
+		// 처치 보상 지급.
+		if (const APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
+		{
+			if (AEPPlayerState* PS = PC->GetPlayerState<AEPPlayerState>())
+			{
+				PS->AddExperience(ExperienceReward);
+				PS->AddGold(GoldReward);
+			}
+		}
 		Destroy();
 	}
 }

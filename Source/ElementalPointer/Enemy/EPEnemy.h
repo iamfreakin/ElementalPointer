@@ -30,6 +30,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
 	float MaxHealth = 30.f;
 
+	/** 처치 시 지급 경험치. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy|Reward")
+	float ExperienceReward = 10.f;
+
+	/** 처치 시 지급 골드. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy|Reward")
+	int32 GoldReward = 5;
+
 	/** 피해를 적용한다. 체력이 0 이하가 되면 처치 처리. */
 	void ApplyDamage(float Amount, EEPHitType HitType = EEPHitType::Normal);
 
