@@ -135,3 +135,5 @@ Epic MCP는 **toolset 단위로 도구를 로드**한다. (한 번에 다 안 �
 | **`Invalid session id` (-32600)** | **에디터 재시작 시 서버 세션이 새로 발급됨. Claude Code가 옛 세션 ID를 캐싱 → `/mcp`에서 unreal-mcp Reconnect, 또는 Claude Code 재시작** |
 
 > ⚠️ **반복 패턴 주의**: C++ 새 클래스 빌드 → 에디터 닫고 빌드 → 에디터 재실행. 이때마다 MCP 서버 세션이 갱신되므로 **에디터 재실행 후 `/mcp` 재연결**이 필요하다. (또는 빌드 후 Claude Code 재시작.)
+
+> ✅ **시작 순서 (중요)**: 반드시 **① 에디터 먼저 켜서 MCP 서버 ready 확인 → ② 그다음 Claude Code 시작**. 순서가 반대면 Claude Code 세션 도구 목록에 unreal-mcp 도구가 등록되지 않는다. 이 경우 `/mcp` Reconnect로도 현재 세션 도구 목록은 갱신되지 않으므로 **Claude Code를 다시 시작**해야 한다. (서버 정상 확인: `curl ... :8000/mcp` → 200)
