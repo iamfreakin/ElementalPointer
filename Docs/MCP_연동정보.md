@@ -132,3 +132,6 @@ Epic MCP는 **toolset 단위로 도구를 로드**한다. (한 번에 다 안 �
 | 도구가 세션에 안 보임 | Claude Code 재시작 |
 | load_toolset 후 도구 호출 실패 | 같은 턴에는 안 됨 → 다음 턴에 호출 |
 | 포트 충돌 | `-ModelContextProtocolPort=` 로 변경 후 `.mcp.json` URL도 같이 수정 |
+| **`Invalid session id` (-32600)** | **에디터 재시작 시 서버 세션이 새로 발급됨. Claude Code가 옛 세션 ID를 캐싱 → `/mcp`에서 unreal-mcp Reconnect, 또는 Claude Code 재시작** |
+
+> ⚠️ **반복 패턴 주의**: C++ 새 클래스 빌드 → 에디터 닫고 빌드 → 에디터 재실행. 이때마다 MCP 서버 세션이 갱신되므로 **에디터 재실행 후 `/mcp` 재연결**이 필요하다. (또는 빌드 후 Claude Code 재시작.)
