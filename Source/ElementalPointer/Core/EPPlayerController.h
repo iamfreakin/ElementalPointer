@@ -9,6 +9,55 @@
 
 class AEPSwordField;
 
+/** 상점 항목. 구매할 때마다 가격이 오른다(반복 구매). */
+USTRUCT()
+struct FShopItem
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FString DisplayName;
+
+	UPROPERTY()
+	EAwakeningStat Stat = EAwakeningStat::AttackDamage;
+
+	UPROPERTY()
+	float Value = 0.f;
+
+	UPROPERTY()
+	int32 BaseCost = 10;
+
+	UPROPERTY()
+	int32 CostGrowth = 5;
+
+	UPROPERTY()
+	int32 PurchaseCount = 0;
+
+	int32 CurrentCost() const { return BaseCost + PurchaseCount * CostGrowth; }
+};
+
+/** 깨달음 노드. 주효과 + 페널티(트레이드오프)를 레벨당 적용. 환불 무료. */
+USTRUCT()
+struct FEnlightenmentNode
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FString DisplayName;
+
+	UPROPERTY()
+	EAwakeningStat MainStat = EAwakeningStat::AttackDamage;
+
+	UPROPERTY()
+	float MainValue = 0.f;
+
+	UPROPERTY()
+	EAwakeningStat PenaltyStat = EAwakeningStat::AttackSpeed;
+
+	UPROPERTY()
+	float PenaltyValue = 0.f;
+};
+
 /**
  * 커서 상태 스냅샷. 전투/기믹 시스템은 이 구조체만 참조한다.
  */
@@ -72,6 +121,42 @@ protected:
 	/** 기본 카드 풀 구성(임시 하드코딩, 2.3에서 DataAsset 이전). */
 	void BuildDefaultCardPool();
 
+	/** 스탯을 SwordField에 적용(각성·상점 공통). */
+	void ApplyStatToSword(EAwakeningStat Stat, float Value);
+
+	// --- 업그레이드 상점 (2.1) ---
+
+	/** 기본 상점 항목 구성. */
+	void BuildShopItems();
+
+	/** index번 상점 항목 구매 시도(골드 차감 + 적용). */
+	void BuyShopItem(int32 Index);
+
+	/** 상점 → 다음 전투 시작. */
+	void StartNextCombat();
+
+	void OnNextCombat();
+
+	// --- 깨달음 (2.4, 영구) ---
+
+	/** 깨달음 노드 구성. */
+	void BuildEnlightenmentNodes();
+
+	/** GameInstance에 저장된 깨달음 레벨을 SwordField에 적용(게임 시작 시). */
+	void ApplyEnlightenmentToSword();
+
+	/** index번 깨달음 노드에 1포인트 투자. */
+	void InvestEnlightenment(int32 Index);
+
+	/** 모든 깨달음 노드 환불(포인트 회수, 효과 제거). */
+	void RefundAllEnlightenment();
+
+	void OnInvest1();
+	void OnInvest2();
+	void OnInvest3();
+	void OnInvest4();
+	void OnRefundEnlightenment();
+
 	/** 전투 평면의 높이(Z). arena 바닥과 일치. */
 	UPROPERTY(EditDefaultsOnly, Category = "Cursor")
 	float CombatPlaneZ = 0.f;
@@ -100,4 +185,10 @@ private:
 
 	/** 카드 선택 대기 상태. */
 	bool bAwaitingSelection = false;
+
+	/** 상점 항목. */
+	TArray<FShopItem> ShopItems;
+
+	/** 깨달음 노드 정의. */
+	TArray<FEnlightenmentNode> EnlightenmentNodes;
 };
