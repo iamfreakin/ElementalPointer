@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Progression/EPAwakening.h"
 #include "EPPlayerController.generated.h"
+
+class AEPSwordField;
 
 /**
  * 커서 상태 스냅샷. 전투/기믹 시스템은 이 구조체만 참조한다.
@@ -42,10 +45,32 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void PlayerTick(float DeltaTime) override;
+	virtual void SetupInputComponent() override;
 
 	/** BeginPlay에서 스폰할 검의 공격 범위 액터 클래스. */
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
-	TSubclassOf<class AEPSwordField> SwordFieldClass;
+	TSubclassOf<AEPSwordField> SwordFieldClass;
+
+	// --- 각성 카드 (2.2) ---
+
+	/** 레벨업 콜백: 카드 선택 시퀀스 진입. */
+	void HandleLevelUp();
+
+	/** 카드 풀에서 3장을 뽑아 화면에 제시(일시정지). */
+	void PresentCards();
+
+	/** index번 카드를 선택하여 적용하고 다음 큐 처리. */
+	void SelectCard(int32 Index);
+
+	void OnSelectCard1();
+	void OnSelectCard2();
+	void OnSelectCard3();
+
+	/** 선택한 카드 효과를 SwordField에 적용. */
+	void ApplyCard(const FAwakeningCard& Card);
+
+	/** 기본 카드 풀 구성(임시 하드코딩, 2.3에서 DataAsset 이전). */
+	void BuildDefaultCardPool();
 
 	/** 전투 평면의 높이(Z). arena 바닥과 일치. */
 	UPROPERTY(EditDefaultsOnly, Category = "Cursor")
@@ -60,4 +85,19 @@ private:
 	void UpdateCursorState();
 
 	FCursorState CursorState;
+
+	/** 스폰한 공격 범위 액터(카드 효과 적용 대상). */
+	TObjectPtr<AEPSwordField> SwordField;
+
+	/** 각성 카드 풀. */
+	TArray<FAwakeningCard> CardPool;
+
+	/** 현재 제시 중인 3장. */
+	TArray<FAwakeningCard> CurrentChoices;
+
+	/** 처리 대기 중인 레벨업 수. */
+	int32 PendingLevelUps = 0;
+
+	/** 카드 선택 대기 상태. */
+	bool bAwaitingSelection = false;
 };

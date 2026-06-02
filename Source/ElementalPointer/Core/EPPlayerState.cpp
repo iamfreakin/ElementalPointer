@@ -9,7 +9,14 @@ void AEPPlayerState::AddExperience(float Amount)
 		return;
 	}
 	Experience += Amount;
-	// TODO(2.2): 레벨업 임계 처리 + 각성 카드 트리거.
+
+	// 임계 도달 시마다 레벨업 (한 번에 여러 레벨도 처리).
+	while (Experience >= GetExperienceToNextLevel())
+	{
+		Experience -= GetExperienceToNextLevel();
+		++Level;
+		OnLevelUp.Broadcast();
+	}
 }
 
 void AEPPlayerState::AddGold(int32 Amount)
@@ -19,4 +26,14 @@ void AEPPlayerState::AddGold(int32 Amount)
 		return;
 	}
 	Gold += Amount;
+}
+
+bool AEPPlayerState::TrySpendGold(int32 Amount)
+{
+	if (Amount <= 0 || Gold < Amount)
+	{
+		return false;
+	}
+	Gold -= Amount;
+	return true;
 }

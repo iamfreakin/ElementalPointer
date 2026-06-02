@@ -6,6 +6,9 @@
 #include "GameFramework/PlayerState.h"
 #include "EPPlayerState.generated.h"
 
+/** 레벨업 시 브로드캐스트 (오른 레벨 수만큼). */
+DECLARE_MULTICAST_DELEGATE(FOnLevelUp);
+
 /**
  * 한 판(런)의 성장 상태. 경험치/레벨(각성용)과 골드(상점용)를 보유한다.
  * 깨달음(영구 성장)은 별도 세이브로 관리 예정.
@@ -31,7 +34,16 @@ public:
 	/** 골드 획득. */
 	void AddGold(int32 Amount);
 
+	/** 골드 차감. 잔액 부족 시 false. */
+	bool TrySpendGold(int32 Amount);
+
+	/** 레벨업 이벤트. (PlayerController가 구독해 각성 카드 시퀀스 실행) */
+	FOnLevelUp OnLevelUp;
+
 private:
+	/** 다음 레벨까지 필요한 경험치. */
+	float GetExperienceToNextLevel() const { return 30.f * Level; }
+
 	UPROPERTY(VisibleAnywhere, Category = "Progression")
 	int32 Level = 1;
 
