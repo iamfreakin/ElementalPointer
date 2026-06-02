@@ -32,6 +32,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	float AttacksPerSecond = 1.f;
 
+	/** 헤드어택(정면) 피해 배수. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float HeadAttackMultiplier = 1.2f;
+
+	/** 백어택(후면) 치명타 피해 배수. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float BackAttackCritMultiplier = 2.f;
+
 protected:
 	virtual void Tick(float DeltaTime) override;
 

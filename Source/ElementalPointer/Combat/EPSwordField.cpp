@@ -68,7 +68,27 @@ void AEPSwordField::PerformAttack()
 		// 전투 평면 거리(XY)로 범위 판정.
 		if (FVector::Dist2D(Enemy->GetActorLocation(), Center) <= AttackRadius)
 		{
-			Enemy->ApplyDamage(AttackDamage);
+			// 적→커서 방향과 적의 forward 내적으로 정면/후면 판정.
+			const FVector ToField = (Center - Enemy->GetActorLocation()).GetSafeNormal2D();
+			const FVector EnemyForward = Enemy->GetActorForwardVector().GetSafeNormal2D();
+			const float Dot = FVector::DotProduct(EnemyForward, ToField);
+
+			float Damage = AttackDamage;
+			EEPHitType HitType = EEPHitType::Normal;
+			if (Dot > 0.5f)
+			{
+				// 커서가 적 정면 → 헤드어택.
+				Damage *= HeadAttackMultiplier;
+				HitType = EEPHitType::Head;
+			}
+			else if (Dot < -0.5f)
+			{
+				// 커서가 적 후면 → 백어택(치명타).
+				Damage *= BackAttackCritMultiplier;
+				HitType = EEPHitType::Back;
+			}
+
+			Enemy->ApplyDamage(Damage, HitType);
 		}
 	}
 }
