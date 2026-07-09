@@ -2,7 +2,7 @@
 
 캐릭터를 직접 조종하는 대신 커서 위치를 공격 범위로 쓰고, 보스는 스탯 벽이 아니라 기믹 이해로 풀도록 설계한 Unreal C++ 전투 프로토타입입니다.
 
-[Repository](https://github.com/iamfreakin/ElementalPointer) | [Portfolio Hub](https://github.com/iamfreakin/GamePortfolio)
+[Repository](https://github.com/iamfreakin/ElementalPointer)
 
 ## Overview
 
